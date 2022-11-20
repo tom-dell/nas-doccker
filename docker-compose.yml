@@ -114,7 +114,7 @@ services:
       - /volume1/docker/appdata/tautulli:/config
 
   plexautoskip:
-    container_name: nginx-proxy-manager
+    container_name: plexautoskip
     image: ghcr.io/mdhiggins/plexautoskip-docker
     restart: unless-stopped
     environment:
