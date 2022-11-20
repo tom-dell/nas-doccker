@@ -1,132 +1,132 @@
 version: "2.1"
 services:
   plex:
-    image: lscr.io/linuxserver/plex:latest
     container_name: plex
+    image: lscr.io/linuxserver/plex:latest
     network_mode: host
+    restart: unless-stopped
+    devices:
+        - /dev/dri:/dev/dri
     environment:
       - PUID=1029
       - PGID=100
       - VERSION=docker
-    devices:
-        - /dev/dri:/dev/dri
     volumes:
       - /volume1/docker/appdata/plex:/config
       - /volume1/data/media:/data/media
-    restart: unless-stopped
 
   sabnzbd:
-    image: lscr.io/linuxserver/sabnzbd
     container_name: sabnzbd
+    image: lscr.io/linuxserver/sabnzbd
+    restart: unless-stopped
     environment:
       - PUID=1029
       - PGID=100
       - TZ=Australia/Brisbane
+    ports:
+      - 8080:8080
     volumes:
       - /volume1/docker/appdata/sabnzbd:/config
       - /volume1/data/usenet:/data/usenet
-    ports:
-      - 8080:8080
-    restart: unless-stopped
 
   sonarr:
-    image: lscr.io/linuxserver/sonarr:latest
     container_name: sonarr
+    image: lscr.io/linuxserver/sonarr:latest
+    restart: unless-stopped
     environment:
       - PUID=1029
       - PGID=100
       - TZ=Australia/Brisbane
+    ports:
+      - 8989:8989
     volumes:
       - /volume1/docker/appdata/sonarr:/config
       - /volume1/data/media/tv:/data/media/tv
       - /volume1/data/usenet:/data/usenet/
-    ports:
-      - 8989:8989
-    restart: unless-stopped
 
   radarr:
-    image: lscr.io/linuxserver/radarr:latest
     container_name: radarr
+    image: lscr.io/linuxserver/radarr:latest
+    restart: unless-stopped
     environment:
       - PUID=1029
       - PGID=100
       - TZ=Australia/Brisbane
+    ports:
+      - 7878:7878
     volumes:
       - /volume1/docker/appdata/radarr:/config
       - /volume1/data/media/movies:/data/media/movies
       - /volume1/data/usenet:/data/usenet/
-    ports:
-      - 7878:7878
-    restart: unless-stopped
 
   bazarr:
-    image: lscr.io/linuxserver/bazarr:latest
     container_name: bazarr
+    image: lscr.io/linuxserver/bazarr:latest
+    restart: unless-stopped
     environment:
       - PUID=1029
       - PGID=100
       - TZ=Australia/Brisbane
+    ports:
+      - 6767:6767  
     volumes:
       - /volume1/docker/appdata/bazarr:/config
       - /volume1/data/media/movies:/data/media/movies
-      - /volume1/data/media/tv:/data/media/tv      
-    ports:
-      - 6767:6767
-    restart: unless-stopped    
+      - /volume1/data/media/tv:/data/media/tv       
 
   prowlarr:
-    image: lscr.io/linuxserver/prowlarr:develop
     container_name: prowlarr
+    image: lscr.io/linuxserver/prowlarr:develop
+    restart: unless-stopped
     environment:
       - PUID=1029
       - PGID=100
       - TZ=Australia/Brisbane
-    volumes:
-      - /volume1/docker/appdata/prowlarr:/config
     ports:
       - 9696:9696
-    restart: unless-stopped
+    volumes:
+      - /volume1/docker/appdata/prowlarr:/config
 
   overseerr:
-    image: lscr.io/linuxserver/overseerr:latest
     container_name: overseerr
+    image: lscr.io/linuxserver/overseerr:latest
+    restart: unless-stopped
     environment:
       - PUID=1029
       - PGID=100
       - TZ=Australia/Brisbane
-    volumes:
-      - /volume1/docker/appdata/overseerr:/config
     ports:
       - 5055:5055
-    restart: unless-stopped
+    volumes:
+      - /volume1/docker/appdata/overseerr:/config
 
   tautulli:
-    image: lscr.io/linuxserver/tautulli
     container_name: tautulli
+    image: lscr.io/linuxserver/tautulli
+    restart: unless-stopped
     environment:
       - PUID=1029
       - PGID=100
       - TZ=Australia/Brisbane
-    volumes:
-      - /volume1/docker/appdata/tautulli:/config
     ports:
       - 8181:8181
-    restart: unless-stopped
+    volumes:
+      - /volume1/docker/appdata/tautulli:/config
 
   plexautoskip:
+    container_name: nginx-proxy-manager
     image: ghcr.io/mdhiggins/plexautoskip-docker
-    container_name: plexautoskip
+    restart: unless-stopped
     environment:
       - PUID=1029
       - PGID=100
       - TZ=Australia/Brisbane
     volumes:
       - /volume1/docker/appdata/plexautoskip:/config
-    restart: unless-stopped
 
   nginxproxymanager:
-    image: jc21/nginx-proxy-manager:latest
     container_name: nginx-proxy-manager
+    image: jc21/nginx-proxy-manager:latest
     restart: unless-stopped
     ports:
       - 8081:80
@@ -137,8 +137,9 @@ services:
       - /volume1/docker/appdata/nginxproxymanager/letsencrypt:/etc/letsencrypt
 
   plex-meta-manager:
-    image: meisnate12/plex-meta-manager
     container_name: plex-meta-manager
+    image: meisnate12/plex-meta-manager
+    restart: unless-stopped
     environment:
       - PUID=1029
       - PGID=100
@@ -148,28 +149,22 @@ services:
       - PMM_NO_MISSING=False
     volumes:
       - /volume1/docker/appdata/plexmetamanager:/config
-    restart: unless-stopped
 
   dizquetv:
     container_name: disquetv
     image: vexorian/dizquetv:edge
-    volumes:
-      - /volume1/docker/appdata/dizquetv:/home/node/app/.dizquetv
+    restart: unless-stopped
     ports:
       - 8111:8000
-    restart: unless-stopped
     devices:
       - /dev/dri:/dev/dri
+    volumes:
+      - /volume1/docker/appdata/dizquetv:/home/node/app/.dizquetv
 
   tdarr:
     container_name: tdarr
     image: ghcr.io/haveagitgat/tdarr:latest
     restart: unless-stopped
-    ports:
-      - 8265:8265 # webUI port
-      - 8266:8266 # server port
-      - 8267:8267 # Internal node port
-      - 8268:8268 # Example extra node port
     environment:
       - TZ=Australia/Brisbane
       - PUID=1029
@@ -178,11 +173,16 @@ services:
       - webUIPort=8265
       - internalNode=true
       - nodeID=SynologyNAS
+    ports:
+      - 8265:8265 # webUI port
+      - 8266:8266 # server port
+      - 8267:8267 # Internal node port
+      - 8268:8268 # Example extra node port
+    devices:
+      - /dev/dri:/dev/dri
     volumes:
       - /volume1/docker/appdata/tdarr/server:/app/server
       - /volume1/docker/appdata/tdarr/configs:/app/configs
       - /volume1/docker/appdata/tdarr/logs:/app/logs
       - /volume1/data/media:/media
       - /volume1/docker/appdata/tdarr/transcode_cache:/temp
-    devices:
-      - /dev/dri:/dev/dri
