@@ -186,3 +186,12 @@ services:
       - /volume1/docker/appdata/tdarr/logs:/app/logs
       - /volume1/data/media:/media
       - /volume1/docker/appdata/tdarr/transcode_cache:/temp
+
+  bento:
+    image: lewisdoesstuff/bento
+    volumes:
+      # Append Bento config location to below line.
+      - /volume1/docker/appdata/bento/config.js:/usr/share/nginx/html/config.js
+    ports:
+      # Replace host port 80 (left side) with desired port.
+      - 83:80
