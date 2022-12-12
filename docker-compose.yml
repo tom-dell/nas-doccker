@@ -151,7 +151,7 @@ services:
       - /volume1/docker/appdata/plexmetamanager:/config
 
   dizquetv:
-    container_name: disquetv
+    container_name: dizquetv
     image: vexorian/dizquetv:edge
     restart: unless-stopped
     ports:
@@ -185,8 +185,8 @@ services:
       - /volume1/docker/appdata/tdarr/configs:/app/configs
       - /volume1/docker/appdata/tdarr/logs:/app/logs
       - /volume1/data/media:/media
-      - /volume1/docker/appdata/tdarr/transcode_cache:/temp
-
+      - /volume1/docker/appdata/tdarr/transcode_cache:/home/transcode_cache
+      
   bento:
     image: lewisdoesstuff/bento
     volumes:
